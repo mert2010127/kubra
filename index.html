@@ -8,17 +8,30 @@
 body {
   margin:0; padding:0; font-family:Arial,sans-serif;
   background:#a8e6cf; display:flex; justify-content:center; align-items:center;
-  height:100vh; overflow:hidden; flex-direction:column; text-align:center;
+  height:100vh; overflow:hidden; flex-direction:column; text-align:center; position:relative;
 }
 h1 {
-  font-size:28px; color:#fff; text-shadow:1px 1px 5px #444; margin-bottom:20px;
+  font-size:28px; color:#fff; text-shadow:1px 1px 5px #444; margin-bottom:20px; z-index:2;
 }
 button {
   padding:12px 25px; margin:10px; font-size:20px; border:none; border-radius:8px;
-  cursor:pointer; background:#ff6b81; color:white; transition:0.3s;
+  cursor:pointer; background:#ff6b81; color:white; transition:0.3s; z-index:2;
 }
 button:hover { background:#ff4757; }
-#message,#number { display:none; font-size:24px; color:#fff; margin-top:20px; text-shadow:1px 1px 4px #444; }
+#message,#number { display:none; font-size:24px; color:#fff; margin-top:20px; text-shadow:1px 1px 4px #444; z-index:2; position:relative;}
+
+/* Emoji stili */
+.emoji {
+  position:absolute;
+  font-size:24px;
+  pointer-events:none; /* yazıları tıklanabilir bırak */
+  animation: float linear infinite;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) rotate(0deg); opacity:1; }
+  100% { transform: translate(500px, -500px) rotate(360deg); opacity:0; }
+}
 </style>
 </head>
 <body>
@@ -30,10 +43,9 @@ button:hover { background:#ff4757; }
   <button id="yesBtn">SANA AŞIĞIM</button>
 </div>
 
-<div id="message">Bende Seni Seviyorum Kübrammm</div>
-<div id="number">0552 152 80 61</div>
+<div id="message">Bende Seni Seviyorumm Yavrummm</div>
+<div id="message">Lütfen şimdi bana seni seviyorum diyerek ses kaydı at</div>
 
-<!-- Şarkı ekleme -->
 <audio id="sarki" src="koprualti-duman.mp3"></audio>
 
 <script>
@@ -43,6 +55,7 @@ const message = document.getElementById("message");
 const number = document.getElementById("number");
 const question = document.getElementById("question");
 const sarki = document.getElementById("sarki");
+const buttons = document.getElementById("buttons");
 
 // Hayır butonunu rastgele hareket ettirme
 function randomPosition(button){
@@ -59,16 +72,42 @@ noBtn.addEventListener("mouseover", ()=>{
   randomPosition(noBtn);
 });
 
-// Evet butonuna basınca soru ve butonları gizle, mesaj ve numara göster, şarkıyı çal
+// Emoji oluşturma
+const emojis = ["❤️","💖","💘","💕","💞","💝","😍"];
+function createEmoji(){
+  const emoji = document.createElement("div");
+  emoji.className = "emoji";
+  emoji.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+  
+  const size = Math.random()*20 + 20; // 20-40px arası
+  emoji.style.fontSize = size+"px";
+
+  const x = Math.random()*window.innerWidth;
+  const y = Math.random()*window.innerHeight;
+  emoji.style.left = x+"px";
+  emoji.style.top = y+"px";
+
+  const duration = Math.random()*5 + 5; // 5-10s arası
+  emoji.style.animationDuration = duration + "s";
+
+  document.body.appendChild(emoji);
+
+  // 10 saniye sonra kaldır
+  setTimeout(()=>{emoji.remove()}, duration*1000);
+}
+
+// Evet butonu basınca
 yesBtn.addEventListener("click", ()=>{
   question.style.display = "none";
-  document.getElementById("buttons").style.display = "none";
+  buttons.style.display = "none";
   message.style.display = "block";
   number.style.display = "block";
 
-  sarki.play().catch(err => {
-    console.log("Tarayıcı müziği otomatik çalamadı. Kullanıcı etkileşimi gerekiyor.");
-  });
+  // Müzik çal
+  sarki.play().catch(err=>console.log("Tarayıcı autoplay engelledi"));
+
+  // Her 300ms'de bir emoji oluştur
+  setInterval(createEmoji, 300);
 });
 </script>
 
