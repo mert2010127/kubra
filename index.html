@@ -46,6 +46,7 @@ button:hover { background:#ff4757; }
 <div id="message">Bende Öyle Düşünmüştüm</div>
 <div id="number">0552 152 80 61</div>
 
+<!-- Şarkı ekleme -->
 <audio id="sarki" src="koprualti-duman.mp3"></audio>
 
 <script>
@@ -57,7 +58,7 @@ const question = document.getElementById("question");
 const sarki = document.getElementById("sarki");
 const buttons = document.getElementById("buttons");
 
-// Hayır butonunu rastgele hareket ettirme
+// Hayır butonu rastgele hareket
 function randomPosition(button){
   const bodyWidth = window.innerWidth;
   const bodyHeight = window.innerHeight;
@@ -68,9 +69,9 @@ function randomPosition(button){
   button.style.top = y + "px";
 }
 
-noBtn.addEventListener("mouseover", ()=>{
-  randomPosition(noBtn);
-});
+// Hem mouse hem dokunma olayları
+noBtn.addEventListener("mouseover", ()=>{ randomPosition(noBtn); });
+noBtn.addEventListener("touchstart", ()=>{ randomPosition(noBtn); });
 
 // Emoji oluşturma
 const emojis = ["❤️","💖","💘","💕","💞","💝","😍"];
@@ -79,7 +80,7 @@ function createEmoji(){
   emoji.className = "emoji";
   emoji.innerText = emojis[Math.floor(Math.random()*emojis.length)];
   
-  const size = Math.random()*20 + 20; // 20-40px arası
+  const size = Math.random()*20 + 20; // 20-40px
   emoji.style.fontSize = size+"px";
 
   const x = Math.random()*window.innerWidth;
@@ -87,12 +88,11 @@ function createEmoji(){
   emoji.style.left = x+"px";
   emoji.style.top = y+"px";
 
-  const duration = Math.random()*5 + 5; // 5-10s arası
+  const duration = Math.random()*5 + 5; // 5-10s
   emoji.style.animationDuration = duration + "s";
 
   document.body.appendChild(emoji);
 
-  // 10 saniye sonra kaldır
   setTimeout(()=>{emoji.remove()}, duration*1000);
 }
 
@@ -103,10 +103,10 @@ yesBtn.addEventListener("click", ()=>{
   message.style.display = "block";
   number.style.display = "block";
 
-  // Müzik çal
+  // Şarkıyı çal
   sarki.play().catch(err=>console.log("Tarayıcı autoplay engelledi"));
 
-  // Her 300ms'de bir emoji oluştur
+  // Emoji üretimi başlasın
   setInterval(createEmoji, 300);
 });
 </script>
